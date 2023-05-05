@@ -40,7 +40,7 @@ const Home: NextPage = ({ }) => {
 
     router.push(`/paste/${url}`);
     
-  }, [router.isReady, url]);
+  }, [router.isReady, url, router]);
 
   trpc.useQuery(["paste.getPaste", { id: uuid }], {
     enabled: isLink,
