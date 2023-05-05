@@ -46,7 +46,7 @@ const Home: NextPage = ({ }) => {
   const handleClick = (): void => {
     if (isLink) {
       // copy to clipboard
-      const fullURL: string = `http://localhost:3000/paste/${url}`;
+      const fullURL = `http://localhost:3000/paste/${url}`;
       console.log(fullURL);
       navigator.clipboard.writeText(fullURL);
 

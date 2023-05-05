@@ -16,7 +16,7 @@ const Paste: NextPage = () => {
     setURLID(router.query.urlID as string);
     setCanFetch(true);
     
-  }, [router.isReady]);
+  }, [router.isReady, router.query.urlID]);
 
   const query = trpc.useQuery(["paste.getPasteContents", { urlID: urlID }], {
     enabled: canFetch,
