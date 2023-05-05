@@ -2,19 +2,22 @@ import { trpc } from "../utils/trpc";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { sanitizePaste, validatePaste } from "../utils/pasteutils";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "next/router";
 
 const Home: NextPage = ({ }) => {
   const waiting = "Baste!";
   const working = "Basting...";
 
+  const router = useRouter();
+
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const [buttonText, setButtonText] = useState(waiting);
   const [isLink, setLink] = useState(false);
-  const [url, setURL] = useState<string>("");
   const [uuid] = useState(uuidv4());
+  const [url, setURL] = useState<string>("");
 
   const inputMutation = trpc.useMutation(["paste.createPaste"], {
     onSuccess: () => {
@@ -25,14 +28,28 @@ const Home: NextPage = ({ }) => {
     },
   });
 
+  useEffect(() => {
+
+    if (!router.isReady) {
+      return;
+    }
+
+    if (url === "") {
+      return;
+    }
+
+    router.push(`/paste/${url}`);
+    
+  }, [router.isReady, url]);
+
   trpc.useQuery(["paste.getPaste", { id: uuid }], {
     enabled: isLink,
 
     onSuccess: (data) => {
-      const urlID: string = data?.urlID as string;
 
-      setURL(urlID); // temporary solution
-      setButtonText("Copy link to clipboard");
+      const urlID: string = data?.urlID as string;
+      setURL(urlID);
+
     },
   });
 
@@ -45,11 +62,6 @@ const Home: NextPage = ({ }) => {
 
   const handleClick = (): void => {
     if (isLink) {
-      // copy to clipboard
-      const fullURL = `http://localhost:3000/paste/${url}`;
-      console.log(fullURL);
-      navigator.clipboard.writeText(fullURL);
-
       return;
     }
 
@@ -93,9 +105,7 @@ const Home: NextPage = ({ }) => {
         <div className="pt-8 text-2xl text-white flex justify-center items-center w-full">
           <button
             className={
-              (isLink ? "hover:bg-green-500 " : "hover:bg-orange-400 ") +
-              (isLink ? "bg-green-400 " : "bg-orange-300 ") +
-              "border-none p-4 rounded-lg transition ease-in-out delay-50 hover:scale-110 duration-300"
+              "border-none p-4 rounded-lg transition ease-in-out delay-50 hover:scale-110 duration-300 hover:bg-orange-400 bg-orange-300"
             }
             onClick={handleClick}
           >
@@ -103,11 +113,6 @@ const Home: NextPage = ({ }) => {
           </button>
         </div>
 
-        {/*
-        <div className="pt-6 text-2xl text-blue-500 flex justify-center items-center w-full">
-          {hello.data ? <p>{hello.data.greeting}</p> : <p>Loading..</p>}
-        </div>
-        */}
       </main>
     </>
   );
