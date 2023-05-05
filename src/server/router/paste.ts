@@ -71,5 +71,5 @@ export const pasteRouter = createRouter()
 const shortenBase64 = (uuid: string): string => {
   const hex = uuid.replace(/-/g, "");
   const base64String = Buffer.from(hex, "hex").toString("base64");
-  return base64String.replace("/", "");
+  return base64String.replaceAll("/", "");
 };
