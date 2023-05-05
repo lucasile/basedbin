@@ -15,5 +15,5 @@ model Paste {
     id String @id @unique
     urlID String @unique
     createdAt DateTime @default(now())
-    content String
+    content String @db.Text
 }
