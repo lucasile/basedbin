@@ -1,17 +1,11 @@
 import { trpc } from "../utils/trpc";
-import type { GetServerSideProps, NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
 import { sanitizePaste, validatePaste } from "../utils/pasteutils";
 import { useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-type Props = { host: string | null };
-
-export const getServerSideProps: GetServerSideProps<Props> = async (
-  context
-) => ({ props: { host: context.req.headers.host || null } });
-
-const Home: NextPage<Props> = ({ host }) => {
+const Home: NextPage = ({ }) => {
   const waiting = "Baste!";
   const working = "Basting...";
 
